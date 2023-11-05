@@ -1,0 +1,230 @@
+
+#include <stdio.h>
+
+
+int N;
+
+
+void printArr(int* Arr, int gnd, int N) {
+
+    int i;
+    for (i = gnd; i < N; i++) {
+        printf("%d ", Arr[i]);
+    }
+    printf("\n");
+}
+
+
+void printIterr(int* Arr, int N, int index) {
+    printf("After passing no.%d : ", index);
+    for (int i = 0; i < N; i++) {
+        printf("%d ", Arr[i]);
+    }
+    printf("\n");
+}
+
+
+void swp(int* a, int* b) {
+
+    int aux = *b;
+    *b = *a;
+    *a = aux;
+}
+
+void heapify(int* Arr, int N, int i) {
+
+    int largest = i;
+    int left = 2 * i + 1;
+    int right = 2 * i + 2;
+
+    if (left < N && Arr[left] > Arr[largest])
+        largest = left;
+
+    if (right < N && Arr[right] > Arr[largest])
+        largest = right;
+
+    if (largest != i) {
+        swp(Arr + i, Arr + largest);
+        heapify(Arr, N, largest);
+    }
+}
+
+void HeapSort(int* Arr, int N) {
+
+    for (int i = N / 2 - 1; i >= 0; i--) {
+        heapify(Arr, N, i);
+    }
+
+    for (int i = N - 1; i >= 0; i--) {
+        swp(Arr + 0, Arr + i);
+        printf("Passing through:\n");
+        printArr(Arr,0,N);
+        heapify(Arr, i, 0);
+    }
+}
+
+void ShellSort(int* Arr, int N, const int* H, int NH) {
+
+    int tmp,gap,k , i, j;
+
+    for (k = 0; k < NH; k++) {
+        gap = H[k];
+
+        for (j = gap; j < N; j++) {
+
+            tmp = Arr[j];
+
+            for (i = j; i >= gap && Arr[i - gap] > tmp; i -= gap)
+                Arr[i] = Arr[i - gap];
+
+            Arr[i] = tmp;
+        }
+        printIterr(Arr, N, k + 1);
+    }
+}
+
+
+int Partition(int* Arr, int left, int right) {
+
+    int pivot, TMP,start,end;
+    
+    pivot = (left + right) / 2;
+    
+    TMP = Arr[right];
+    Arr[right] = Arr[pivot];
+    Arr[pivot] = TMP;
+
+    start = left;
+    end = right-1;
+
+    while (start <= end) {
+
+        while (Arr[start] < Arr[right]) start++;
+        while (Arr[end] > Arr[right]) end--;
+        if (start <= end) {
+            swp(Arr + start, Arr + end);
+            start++;
+            end--;
+        }
+    }
+
+    TMP = Arr[start];
+    Arr[start] = Arr[right];
+    Arr[right] = TMP;
+
+    return start;
+}
+
+void QuickSort(int* Arr,int left, int right) {
+
+    int pos;
+    if (left < right) {
+        pos = Partition(Arr, left, right);
+        printf("Passing through:\n");
+        printArr(Arr, left, right + 1);
+        QuickSort(Arr, left, pos-1);
+        QuickSort(Arr, pos+1, right);
+    }
+}
+
+void CocktailSort(int* Arr, int N) {
+
+    int K = 0, i;
+    int lower = 0, upper = N - 1;
+
+    while (!K && lower <=upper ) {
+
+        K = 1;
+        for (i = lower; i < upper; i++) {
+            if (Arr[i] > Arr[i + 1]) {
+                swp(Arr + i, Arr + i + 1);
+                K = 0;
+
+            }
+        }
+        upper--;
+        for (i = upper; i > lower; i--) {
+            if (Arr[i] < Arr[i - 1]) {
+                swp(Arr + i, Arr + i - 1);
+                K = 0;
+            }
+        }
+        lower++;
+        printIterr(Arr, N, i);
+        printf(" upper:%d lower:%d\n", upper, lower);
+    }
+}
+
+void BubbleSort(int* Arr, int N) {
+
+    int K = 0, i, cnt = 0;
+
+    while (!K) {
+
+        K = 1;
+        cnt++;
+        for (i = 0; i < N - 1; i++) {
+            if (Arr[i] > Arr[i + 1]) {
+                swp(Arr + i, Arr + i + 1);
+                K = 0;
+            }
+        }
+        printIterr(Arr, N, cnt);
+    }
+}
+
+void SelectionSort(int* Arr, int N) {
+
+    int i, j;
+
+    for (int i = 0; i < N; i++) {
+        int min = Arr[i];
+        int jmin = i;
+        for (int j = i + 1; j < N; j++)
+            if (Arr[j] < min) {
+                min = Arr[j];
+                jmin = j;
+            }
+        swp(Arr+i, Arr+jmin);
+        printIterr(Arr, N, i+1);
+    }
+}
+
+void InsertSort(int* Arr, int N) {
+
+    int i, j;
+    for (i = 1; i < N; i++) {
+
+        int aux = Arr[i];
+        for (j = 0; j < i; j++) {
+            if (Arr[j] > Arr[i])
+                swp(Arr+j, Arr+i);
+        }
+        printIterr(Arr, N, i);
+    }
+}
+
+int main()
+{
+    int Arr[] = { 19, 6, 11, 8, 14, 20, 18, 14, 13, 17 };
+    N = sizeof(Arr) / sizeof(Arr[0]);
+    const int h[] = {4,3,2,1};
+
+    printArr(Arr,0,N);
+
+
+    //InsertSort(Arr, N);
+    //SelectionSort(Arr, N);
+   // BubbleSort(Arr, N);
+    // CocktailSort(Arr, N);
+  
+    //QuickSort(Arr, 0, N-1);
+   // ShellSort(Arr, N, h, 4);
+   // HeapSort(Arr, N);
+    
+
+    printArr(Arr, 0,N);
+
+    return 0;
+}
+
